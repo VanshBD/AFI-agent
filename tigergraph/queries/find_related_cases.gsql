@@ -1,0 +1,17 @@
+// Controlled historical-memory read. Outcome-bearing ClosedCase vertices are selected only if closed before cutoff.
+CREATE OR REPLACE QUERY findRelatedCases(VERTEX<Transaction> txn, DATETIME cutoff) FOR GRAPH FraudCommand SYNTAX v2 {
+  IF txn.occurred_at <= cutoff THEN
+    Seed = {txn};
+    EligibleCases = SELECT c FROM Seed:t -(<INVOLVES:e)- ClosedCase:c
+                    WHERE c.closed_at < cutoff LIMIT 20;
+    KnownCards = SELECT k FROM EligibleCases:c -(ON_KNOWN_CARD>:e)- KnownCard:k LIMIT 20;
+    Patterns = SELECT p FROM EligibleCases:c -(CLASSIFIED_AS>:e)- FraudPattern:p LIMIT 20;
+    PRINT txn AS transaction, EligibleCases AS eligible_closed_cases,
+          KnownCards AS known_cards, Patterns AS fraud_patterns, cutoff AS cutoff;
+  ELSE
+    PRINT "future_transaction" AS status, txn AS transaction, cutoff AS cutoff;
+  END;
+}
+
+INSTALL QUERY -FORCE findRelatedCases
+

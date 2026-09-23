@@ -1,0 +1,68 @@
+// Controlled validation read: fixed projections only; no inputs and no writes.
+CREATE QUERY getGraphValidationCounts() FOR GRAPH FraudCommand {
+  SumAccum<INT> @@customers;
+  SumAccum<INT> @@card_profiles;
+  SumAccum<INT> @@transactions;
+  SumAccum<INT> @@device_profiles;
+  SumAccum<INT> @@email_domains;
+  SumAccum<INT> @@billing_regions;
+  SumAccum<INT> @@known_cards;
+  SumAccum<INT> @@closed_cases;
+  SumAccum<INT> @@fraud_patterns;
+  SumAccum<INT> @@owns;
+  SumAccum<INT> @@made;
+  SumAccum<INT> @@from_device;
+  SumAccum<INT> @@purchaser_email;
+  SumAccum<INT> @@recipient_email;
+  SumAccum<INT> @@billed_in;
+  SumAccum<INT> @@next;
+  SumAccum<INT> @@has_known_card;
+  SumAccum<INT> @@observed_as;
+  SumAccum<INT> @@involves;
+  SumAccum<INT> @@on_known_card;
+  SumAccum<INT> @@classified_as;
+
+  Customers = {Customer.*};
+  CardProfiles = {CardProfile.*};
+  Transactions = {Transaction.*};
+  DeviceProfiles = {DeviceProfile.*};
+  EmailDomains = {EmailDomain.*};
+  BillingRegions = {BillingRegion.*};
+  KnownCards = {KnownCard.*};
+  ClosedCases = {ClosedCase.*};
+  FraudPatterns = {FraudPattern.*};
+
+  CustomerCount = SELECT c FROM Customers:c ACCUM @@customers += 1;
+  CardProfileCount = SELECT p FROM CardProfiles:p ACCUM @@card_profiles += 1;
+  TransactionCount = SELECT t FROM Transactions:t ACCUM @@transactions += 1;
+  DeviceProfileCount = SELECT d FROM DeviceProfiles:d ACCUM @@device_profiles += 1;
+  EmailDomainCount = SELECT d FROM EmailDomains:d ACCUM @@email_domains += 1;
+  BillingRegionCount = SELECT b FROM BillingRegions:b ACCUM @@billing_regions += 1;
+  KnownCardCount = SELECT k FROM KnownCards:k ACCUM @@known_cards += 1;
+  ClosedCaseCount = SELECT c FROM ClosedCases:c ACCUM @@closed_cases += 1;
+  FraudPatternCount = SELECT f FROM FraudPatterns:f ACCUM @@fraud_patterns += 1;
+
+  OwnsCount = SELECT p FROM Customers:c -(OWNS:e)-> CardProfile:p ACCUM @@owns += 1;
+  MadeCount = SELECT t FROM CardProfiles:p -(MADE:e)-> Transaction:t ACCUM @@made += 1;
+  FromDeviceCount = SELECT d FROM Transactions:t -(FROM_DEVICE:e)-> DeviceProfile:d ACCUM @@from_device += 1;
+  PurchaserEmailCount = SELECT d FROM Transactions:t -(PURCHASER_EMAIL:e)-> EmailDomain:d ACCUM @@purchaser_email += 1;
+  RecipientEmailCount = SELECT d FROM Transactions:t -(RECIPIENT_EMAIL:e)-> EmailDomain:d ACCUM @@recipient_email += 1;
+  BilledInCount = SELECT b FROM Transactions:t -(BILLED_IN:e)-> BillingRegion:b ACCUM @@billed_in += 1;
+  NextCount = SELECT t2 FROM Transactions:t1 -(NEXT:e)-> Transaction:t2 ACCUM @@next += 1;
+  HasKnownCardCount = SELECT k FROM Customers:c -(HAS_KNOWN_CARD:e)-> KnownCard:k ACCUM @@has_known_card += 1;
+  ObservedAsCount = SELECT p FROM KnownCards:k -(OBSERVED_AS:e)-> CardProfile:p ACCUM @@observed_as += 1;
+  InvolvesCount = SELECT t FROM ClosedCases:c -(INVOLVES:e)-> Transaction:t ACCUM @@involves += 1;
+  OnKnownCardCount = SELECT k FROM ClosedCases:c -(ON_KNOWN_CARD:e)-> KnownCard:k ACCUM @@on_known_card += 1;
+  ClassifiedAsCount = SELECT f FROM ClosedCases:c -(CLASSIFIED_AS:e)-> FraudPattern:f ACCUM @@classified_as += 1;
+
+  PRINT @@customers AS Customer, @@card_profiles AS CardProfile, @@transactions AS Transaction,
+        @@device_profiles AS DeviceProfile, @@email_domains AS EmailDomain, @@billing_regions AS BillingRegion,
+        @@known_cards AS KnownCard, @@closed_cases AS ClosedCase, @@fraud_patterns AS FraudPattern,
+        @@owns AS OWNS, @@made AS MADE, @@from_device AS FROM_DEVICE,
+        @@purchaser_email AS PURCHASER_EMAIL, @@recipient_email AS RECIPIENT_EMAIL,
+        @@billed_in AS BILLED_IN, @@next AS NEXT, @@has_known_card AS HAS_KNOWN_CARD,
+        @@observed_as AS OBSERVED_AS, @@involves AS INVOLVES, @@on_known_card AS ON_KNOWN_CARD,
+        @@classified_as AS CLASSIFIED_AS;
+}
+
+INSTALL QUERY getGraphValidationCounts

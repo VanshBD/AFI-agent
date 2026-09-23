@@ -1,0 +1,18 @@
+{
+  "name": "fraud-command",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsc && node dist/tests/temporal-boundary.test.js && node dist/tests/tigergraph-read-tools.test.js && node dist/tests/tigergraph-mcp-commander-client.test.js && node dist/tests/commander-state-foundation.test.js && node dist/tests/graph-hunter-foundation.test.js && node dist/tests/transaction-hunter-foundation.test.js && node dist/tests/device-identity-hunter-foundation.test.js && node dist/tests/behavior-hunter-foundation.test.js && node dist/tests/case-memory-hunter-foundation.test.js && node dist/tests/specialist-interaction.test.js && node dist/tests/evidence-value-sensitivity.test.js && node dist/tests/prosecutor-defense.test.js && node dist/tests/nba-policy.test.js && python tests/tigergraph-query-source.test.py",
+    "verify:live-mcp-reads": "tsc && node dist/scripts/verify_live_mcp_reads.js",
+    "verify:live-mcp-writeback": "tsc && node dist/scripts/verify_live_mcp_writeback.js",
+    "verify:live-mcp-commander": "tsc && node dist/scripts/verify_live_mcp_commander.js",
+    "ingest:benchmark-coverage": "tsc && node dist/scripts/execute_staged_ingestion_mcp.js --artifact-dir=artifacts/benchmark_coverage_ingestion",
+    "verify:live-benchmark-coverage": "tsc && node dist/scripts/verify_live_benchmark_coverage.js",
+    "benchmark": "tsc && node dist/scripts/run_benchmark.js",
+    "generate:live-official": "tsc && node dist/scripts/generate_live_official_outputs.js",
+    "validate:official": "tsc && node dist/scripts/validate_official_answers.js",
+    "start": "tsc && node dist/scripts/serve_ui.js"
+  }
+}

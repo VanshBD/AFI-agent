@@ -1,0 +1,239 @@
+{
+  "mode": "LIVE",
+  "results": [
+    {
+      "caseId": "HHG-001",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-002",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 5,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-003",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-004",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-005",
+      "verdict": "legitimate",
+      "status": "closed_legitimate",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-006",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-007",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-008",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-009",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-010",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-011",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-012",
+      "verdict": "legitimate",
+      "status": "closed_legitimate",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-013",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-014",
+      "verdict": "legitimate",
+      "status": "closed_legitimate",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-015",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-016",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-017",
+      "verdict": "legitimate",
+      "status": "closed_legitimate",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-018",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "CREATE_CASE"
+      ],
+      "evidenceCount": 6,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-019",
+      "verdict": "uncertain",
+      "status": "escalated",
+      "actions": [
+        "DECLINE_TRANSACTION",
+        "VERIFY_WITH_CUSTOMER",
+        "MONITOR_CARD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    },
+    {
+      "caseId": "HHG-020",
+      "verdict": "legitimate",
+      "status": "closed_legitimate",
+      "actions": [
+        "ALLOW_TRANSACTION",
+        "CLOSE_NO_FRAUD"
+      ],
+      "evidenceCount": 7,
+      "writebackVerified": true
+    }
+  ]
+}

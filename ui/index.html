@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AFI Fraud Command Center | TigerGraph Agentic Investigation</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="top-nav">
+      <div class="brand-group">
+        <div class="brand-badge">AFI</div>
+        <div class="brand-text">
+          <h1 class="brand-title">FRAUD COMMAND</h1>
+          <span class="brand-subtitle">TigerGraph Agentic Investigation Platform</span>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <div class="case-selector-container">
+          <label for="caseSelect">INVESTIGATION TRIGGER:</label>
+          <select id="caseSelect" class="case-select"></select>
+        </div>
+        <button id="runBtn" class="btn btn-primary">
+          <span class="btn-icon">▶</span> RUN INVESTIGATION
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Command Center Grid -->
+    <main class="main-content">
+      <!-- Investigation Metadata Header -->
+      <section class="panel header-panel" id="invHeader">
+        <div class="meta-row">
+          <div class="meta-item">
+            <span class="meta-label">INVESTIGATION ID</span>
+            <span class="meta-val highlight" id="valInvId">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">TRIGGER ID</span>
+            <span class="meta-val" id="valTrgId">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">FLAGGED TRANSACTION</span>
+            <span class="meta-val" id="valTxnId">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">CUSTOMER / CARD</span>
+            <span class="meta-val" id="valCustCard">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">INVESTIGATION CUTOFF</span>
+            <span class="meta-val temporal" id="valCutoff">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">RISK SCORE</span>
+            <span class="meta-val risk-score" id="valRiskScore">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">STATUS</span>
+            <span class="status-badge" id="valStatus">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pipeline Progress Stepper -->
+      <section class="panel progress-panel">
+        <div class="section-title">INVESTIGATION PHASE PROGRESSION</div>
+        <div class="stepper" id="pipelineStepper">
+          <div class="step" data-phase="triage"><span class="step-num">1</span> Triage</div>
+          <div class="step" data-phase="initial_fact_gathering"><span class="step-num">2</span> Fact Gathering</div>
+          <div class="step" data-phase="relationship_expansion"><span class="step-num">3</span> Graph Expansion</div>
+          <div class="step" data-phase="historical_retrospective"><span class="step-num">4</span> Case Memory</div>
+          <div class="step" data-phase="hypothesis_evaluation"><span class="step-num">5</span> Adversarial Analysis</div>
+          <div class="step" data-phase="decision_and_nba"><span class="step-num">6</span> Decision & NBA</div>
+        </div>
+      </section>
+
+      <!-- Center Dynamic Split: Graph Visualizer + Evidence Ledger -->
+      <div class="split-grid">
+        <!-- Interactive TigerGraph Subgraph View -->
+        <section class="panel graph-panel">
+          <div class="panel-header">
+            <div class="section-title">TIGERGRAPH SUBGRAPH CONTEXT</div>
+            <div class="graph-legend">
+              <span class="legend-dot customer"></span> Customer
+              <span class="legend-dot card"></span> Card
+              <span class="legend-dot txn"></span> Transaction
+              <span class="legend-dot known-card"></span> KnownCard
+              <span class="legend-dot closed-case"></span> ClosedCase
+            </div>
+          </div>
+          <div class="graph-canvas-container" id="graphContainer">
+            <svg id="graphSvg" width="100%" height="320"></svg>
+          </div>
+        </section>
+
+        <!-- Evidence Ledger Table with Filters -->
+        <section class="panel evidence-panel">
+          <div class="panel-header">
+            <div class="section-title">EVIDENCE LEDGER (FACTS vs INTERPRETATIONS)</div>
+            <div class="filter-group">
+              <select id="evidenceFilter" class="filter-select">
+                <option value="all">All Evidence</option>
+                <option value="supports">Supports Fraud</option>
+                <option value="contradicts">Contradicts Fraud</option>
+                <option value="neutral">Neutral Facts</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="evidence-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Category</th>
+                  <th>Entity</th>
+                  <th>Observation Fact</th>
+                  <th>Polarity</th>
+                  <th>Impact</th>
+                  <th>Provenance</th>
+                </tr>
+              </thead>
+              <tbody id="evidenceTbody">
+                <tr><td colspan="7" class="empty-cell">Select and run an investigation to view ledger.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Analytical Split: Hypotheses, Prosecutor/Defense & Contradictions -->
+      <div class="three-col-grid">
+        <!-- Competing Hypotheses -->
+        <section class="panel">
+          <div class="section-title">COMPETING HYPOTHESES</div>
+          <div class="card-list" id="hypothesesList">
+            <div class="empty-state">No active hypotheses.</div>
+          </div>
+        </section>
+
+        <!-- Adversarial Prosecutor vs Defense Analysis -->
+        <section class="panel">
+          <div class="section-title">ADVERSARIAL PERSPECTIVE ANALYSIS</div>
+          <div class="adversarial-split">
+            <div class="prosecutor-box">
+              <div class="adv-header prose"><span class="adv-tag">PROSECUTOR</span> Fraud Hypothesis</div>
+              <div id="prosecutorFindings" class="adv-content">Run investigation to view findings.</div>
+            </div>
+            <div class="defense-box">
+              <div class="adv-header def"><span class="adv-tag">DEFENSE</span> Benign Explanation</div>
+              <div id="defenseFindings" class="adv-content">Run investigation to view findings.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contradictions & Decision Sensitivity -->
+        <section class="panel">
+          <div class="section-title">CONTRADICTIONS & SENSITIVITY</div>
+          <div class="sens-group">
+            <div class="sub-header">ACTIVE CONTRADICTIONS</div>
+            <div id="contradictionsList" class="contra-list">None detected.</div>
+
+            <div class="sub-header">DECISION SENSITIVITY</div>
+            <div id="sensitivityList" class="sens-list">Run investigation to view decision sensitivities.</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Bottom Banner: Next-Best-Action & Authorization Routing -->
+      <section class="panel nba-panel">
+        <div class="panel-header">
+          <div class="section-title">POLICY & NEXT-BEST-ACTION (NBA) OPERATIONAL GOVERNANCE</div>
+          <div id="nbaPolicyTag" class="policy-rule-badge">POLICY EVALUATION</div>
+        </div>
+        <div class="nba-content">
+          <div class="nba-primary">
+            <div class="nba-label">PRIMARY OPERATIONAL RECOMMENDATION</div>
+            <div class="nba-title" id="nbaAction">—</div>
+            <div class="nba-rationale" id="nbaRationale">Select and run an investigation to determine optimal operational action.</div>
+          </div>
+          <div class="nba-auth">
+            <div class="auth-label">AUTHORIZATION ROUTING</div>
+            <div class="auth-badge" id="nbaAuthBadge">AUTO</div>
+            <div class="auth-status" id="nbaExecStatus">Not evaluated</div>
+          </div>
+          <div class="nba-approval-box" id="nbaApprovalBox">
+            <div class="approval-title">OPERATIONAL GOVERNANCE</div>
+            <div class="approval-desc" id="nbaApprovalDesc">Safe automated non-destructive actions execute automatically. Consequential actions require L1 human analyst approval.</div>
+          </div>
+        </div>
+
+        <!-- Initial vs Final Lifecycle & Regulatory Summary -->
+        <div class="nba-lifecycle-grid" id="nbaLifecycleGrid">
+          <div class="nba-lifecycle-card">
+            <div class="nba-card-title">
+              <span>1. INITIAL DECISION</span>
+              <span id="nbaInitialRoute" class="route-pill auto">AUTO</span>
+            </div>
+            <div id="nbaInitialList" class="nba-item-list">
+              <div class="sub-text">Run investigation to view initial recommendation.</div>
+            </div>
+          </div>
+
+          <div class="nba-lifecycle-card">
+            <div class="nba-card-title">
+              <span>2. EVIDENCE VERIFICATION</span>
+              <span id="nbaEvidenceBadge" class="route-pill neutral">STANDARD</span>
+            </div>
+            <div id="nbaEvidenceContent" class="nba-item-list">
+              <div class="sub-text">Run investigation to view evidence requirements.</div>
+            </div>
+          </div>
+
+          <div class="nba-lifecycle-card">
+            <div class="nba-card-title">
+              <span>3. FINAL DECISION & SAR</span>
+              <span id="nbaSarBadge" class="route-pill neutral">NO SAR</span>
+            </div>
+            <div id="nbaFinalContent" class="nba-item-list">
+              <div class="sub-text">Run investigation to view final decision.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audit Trail Timeline -->
+      <section class="panel audit-panel">
+        <div class="section-title">CHRONOLOGICAL AUDIT TRAIL</div>
+        <div class="audit-timeline" id="auditTimeline">
+          <div class="empty-state">No investigation events logged.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

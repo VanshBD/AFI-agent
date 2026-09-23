@@ -1,0 +1,133 @@
+{
+  "case_id": "HHG-004",
+  "case": {
+    "status": "escalated",
+    "verdict": "uncertain",
+    "fraud_probability": 0.5,
+    "pattern": "none",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3583227"
+    ],
+    "first_suspicious_txn_id": "3583227",
+    "connected_card_ids": [],
+    "connected_device_profiles": [
+      "DP-631db36cbc62232e1bbe6e6a"
+    ],
+    "exposure_usd": 128.33,
+    "evidence": [
+      {
+        "claim": "Transaction 3583227 verified in graph for customer C08106 with 1 associated card profiles.",
+        "source": "graph",
+        "ref": "getTransactionContext",
+        "entity_ids": [
+          "3583227"
+        ]
+      },
+      {
+        "claim": "Observed 1 linked devices, 0 billing regions, and 0 historically eligible known cards. purchaser_domains: 1, recipient_domains: 1.",
+        "source": "graph",
+        "ref": "getTransactionRelationshipContext",
+        "entity_ids": [
+          "3583227"
+        ]
+      },
+      {
+        "claim": "Device profile linked to transaction: DP-631db36cbc62232e1bbe6e6a",
+        "source": "graph",
+        "ref": "getTransactionRelationshipContext",
+        "entity_ids": [
+          "DP-631db36cbc62232e1bbe6e6a"
+        ]
+      },
+      {
+        "claim": "Identified 0 historically eligible closed cases prior to cutoff.",
+        "source": "graph",
+        "ref": "findRelatedCases",
+        "entity_ids": []
+      },
+      {
+        "claim": "Graph Analytics [Centrality: 2, RingScore: 0.00, Bridge: false]: Normal localized topology around card C08106-K1. No syndicated ring detected.",
+        "source": "graph",
+        "ref": "GraphAlgorithmsEngine:degree_and_ring_centrality",
+        "entity_ids": [
+          "3583227"
+        ]
+      },
+      {
+        "claim": "GraphRAG Synthesis [card_not_present_new_device]: Graph topology analysis for txn 3583227: Linked to device profile (DP-631db36cbc62232e1bbe6e6a). No historical fraud precedents prior to cutoff. Temporal constraints strictly satisfied.",
+        "source": "graph",
+        "ref": "GraphRagEngine:subgraph_synthesis",
+        "entity_ids": [
+          "3583227"
+        ]
+      },
+      {
+        "claim": "Simulated customer validation response: Customer confirms unauthorized charge and remained in possession of card.",
+        "source": "customer",
+        "ref": "evidence_request:1",
+        "entity_ids": []
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Live TigerGraph investigation completed with 7 tracked evidence item(s). Graph-grounded synthesis and algorithm metrics evaluated. Initial policy action: DECLINE_TRANSACTION.",
+    "written_to_graph": true,
+    "graph_case_id": "CASE-HHG-004"
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 4,
+      "assumed_response": "Customer confirms unauthorized charge and remained in possession of card."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "DECLINE_TRANSACTION",
+        "route": "L1",
+        "reason": "R1/R2: customer dispute reported, decline pending authorization"
+      },
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: verify dispute details and card possession before terminal blocking"
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R7: open case for disputed transaction"
+      }
+    ],
+    "final": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: unauthorized activity confirmed; exposure $128.33 is under $2,500"
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: internal fraud case record preserved in graph"
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6: put connected cards under monitoring"
+      }
+    ],
+    "what_changed": "Evaluated simulated customer validation response. Actions updated from [DECLINE_TRANSACTION, VERIFY_WITH_CUSTOMER, CREATE_CASE] to [BLOCK_CARD, CREATE_CASE, MONITOR_CONNECTED_CARDS] under Policy R2."
+  },
+  "sar": {
+    "file": false,
+    "reason": "No confirmed reportable activity was established by the bounded live evidence.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0,
+    "activity_dates": []
+  },
+  "stop_reason": "All primary graph and historical fact-gathering phases are complete.",
+  "tool_calls": 3,
+  "tokens": 0,
+  "latency_s": 47.23
+}

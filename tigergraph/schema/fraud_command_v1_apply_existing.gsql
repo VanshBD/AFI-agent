@@ -1,0 +1,39 @@
+// Applies the finalized FraudCommand v1 schema to an existing EMPTY FraudCommand graph.
+// This is additive: it deliberately does not drop the existing graph.
+// Primary IDs remain addressable attributes through primary_id_as_attribute="true";
+// they must not be redeclared as ordinary attributes.
+CREATE SCHEMA_CHANGE JOB FraudCommandV1 FOR GRAPH FraudCommand {
+  ADD VERTEX Customer (PRIMARY_ID customer_id STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX CardProfile (PRIMARY_ID card_profile_id STRING, customer_id STRING, card1 STRING, card2 STRING, card3 STRING, card4 STRING, card5 STRING, card6 STRING, mapping_version STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX KnownCard (PRIMARY_ID card_id STRING, customer_id STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX Transaction (PRIMARY_ID transaction_id STRING, transaction_dt UINT, amount DOUBLE, product_code STRING, channel STRING, risk_score DOUBLE, occurred_at DATETIME, addr1 STRING, addr2 STRING, purchaser_email_domain STRING, recipient_email_domain STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX DeviceProfile (PRIMARY_ID device_profile_id STRING, device_type STRING, device_info STRING, operating_system STRING, browser STRING, screen STRING, identity_newness STRING, proxy_type STRING, normalization_version STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX EmailDomain (PRIMARY_ID domain STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX BillingRegion (PRIMARY_ID billing_region_id STRING, addr1 STRING, addr2 STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX ClosedCase (PRIMARY_ID case_id STRING, customer_id STRING, opened_at DATETIME, closed_at DATETIME, outcome STRING, pattern STRING, exposure_usd DOUBLE, report_filed BOOL, analyst_notes STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX InvestigationCase (PRIMARY_ID case_id STRING, opened_at DATETIME, trigger_type STRING, status STRING, verdict STRING, fraud_probability DOUBLE, temporal_cutoff DATETIME) WITH primary_id_as_attribute="true";
+  ADD VERTEX Evidence (PRIMARY_ID evidence_id STRING, source_type STRING, source_ref STRING, normalized_finding STRING, occurred_at DATETIME, created_at DATETIME, quality STRING, decision_impact STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX PolicyRule (PRIMARY_ID rule_id STRING, rule_text STRING, policy_version STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX FraudPattern (PRIMARY_ID pattern_id STRING, description STRING) WITH primary_id_as_attribute="true";
+  ADD VERTEX DocumentChunk (PRIMARY_ID chunk_id STRING, source_document STRING, section_ref STRING, content STRING, source_version STRING, valid_from DATETIME, valid_to DATETIME) WITH primary_id_as_attribute="true";
+
+  ADD DIRECTED EDGE OWNS (FROM Customer, TO CardProfile);
+  ADD DIRECTED EDGE HAS_KNOWN_CARD (FROM Customer, TO KnownCard);
+  ADD DIRECTED EDGE MADE (FROM CardProfile, TO Transaction) WITH REVERSE_EDGE="MADE_BY";
+  ADD DIRECTED EDGE OBSERVED_AS (FROM KnownCard, TO CardProfile, observed_at DATETIME, source_case_id STRING);
+  ADD DIRECTED EDGE FROM_DEVICE (FROM Transaction, TO DeviceProfile) WITH REVERSE_EDGE="DEVICE_USED_FOR";
+  ADD DIRECTED EDGE PURCHASER_EMAIL (FROM Transaction, TO EmailDomain);
+  ADD DIRECTED EDGE RECIPIENT_EMAIL (FROM Transaction, TO EmailDomain);
+  ADD DIRECTED EDGE BILLED_IN (FROM Transaction, TO BillingRegion);
+  ADD DIRECTED EDGE NEXT (FROM Transaction, TO Transaction, gap_seconds UINT);
+  ADD DIRECTED EDGE INVOLVES (FROM ClosedCase, TO Transaction);
+  ADD DIRECTED EDGE ON_KNOWN_CARD (FROM ClosedCase, TO KnownCard);
+  ADD DIRECTED EDGE CONNECTED_TO (FROM ClosedCase, TO KnownCard);
+  ADD DIRECTED EDGE TRIGGERED_BY (FROM InvestigationCase, TO Transaction);
+  ADD DIRECTED EDGE HAS_EVIDENCE (FROM InvestigationCase, TO Evidence);
+  ADD DIRECTED EDGE GOVERNED_BY (FROM InvestigationCase, TO PolicyRule);
+  ADD DIRECTED EDGE CLASSIFIED_AS (FROM ClosedCase, TO FraudPattern);
+  ADD DIRECTED EDGE EVIDENCE_REFERENCES (FROM Evidence, TO Transaction | FROM Evidence, TO DeviceProfile | FROM Evidence, TO BillingRegion | FROM Evidence, TO EmailDomain | FROM Evidence, TO ClosedCase | FROM Evidence, TO PolicyRule);
+  ADD DIRECTED EDGE SOURCE_CHUNK (FROM PolicyRule, TO DocumentChunk | FROM FraudPattern, TO DocumentChunk);
+}
+RUN SCHEMA_CHANGE JOB FraudCommandV1

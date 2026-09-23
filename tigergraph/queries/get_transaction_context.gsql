@@ -1,0 +1,12 @@
+// Controlled read tool: no data writes and a mandatory temporal cutoff.
+CREATE QUERY getTransactionContext(VERTEX<Transaction> txn, DATETIME cutoff) FOR GRAPH FraudCommand {
+  IF txn.occurred_at <= cutoff THEN
+    Seed = {txn};
+    Profiles = SELECT p FROM Seed:t -(MADE_BY:e)-> CardProfile:p;
+    PRINT txn AS transaction, Profiles AS card_profiles, cutoff AS cutoff;
+  ELSE
+    PRINT "future_transaction" AS status, txn AS transaction, cutoff AS cutoff;
+  END;
+}
+
+INSTALL QUERY getTransactionContext

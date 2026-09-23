@@ -1,0 +1,127 @@
+// FRAUD COMMAND v1: declarative only. REVIEW BEFORE APPLYING.
+// Graph name intentionally uses a GSQL-safe identifier: FraudCommand.
+
+CREATE VERTEX Customer (
+  PRIMARY_ID customer_id STRING
+) WITH primary_id_as_attribute="true";
+
+// A deterministic profile derived from customer_id plus raw card1-card6 values.
+// It is not the business card_id used in case_pack/history.
+CREATE VERTEX CardProfile (
+  PRIMARY_ID card_profile_id STRING,
+  card1 STRING, card2 STRING, card3 STRING, card4 STRING, card5 STRING, card6 STRING,
+  mapping_version STRING
+) WITH primary_id_as_attribute="true";
+
+// Supplied business card IDs occur only in case/history files. A card may map to
+// multiple observed raw profiles because the raw fields are incomplete/variable.
+CREATE VERTEX KnownCard (
+  PRIMARY_ID card_id STRING,
+  customer_id STRING
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX Transaction (
+  PRIMARY_ID transaction_id STRING,
+  transaction_dt UINT,
+  amount DOUBLE,
+  product_code STRING,
+  channel STRING,
+  risk_score DOUBLE,
+  occurred_at DATETIME,
+  addr1 STRING,
+  addr2 STRING,
+  purchaser_email_domain STRING,
+  recipient_email_domain STRING
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX DeviceProfile (
+  PRIMARY_ID device_profile_id STRING,
+  device_type STRING,
+  device_info STRING,
+  operating_system STRING,
+  browser STRING,
+  screen STRING,
+  identity_newness STRING,
+  proxy_type STRING,
+  normalization_version STRING
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX EmailDomain (PRIMARY_ID domain STRING) WITH primary_id_as_attribute="true";
+CREATE VERTEX BillingRegion (PRIMARY_ID billing_region_id STRING, addr1 STRING, addr2 STRING) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX ClosedCase (
+  PRIMARY_ID case_id STRING,
+  customer_id STRING,
+  opened_at DATETIME,
+  closed_at DATETIME,
+  outcome STRING,
+  pattern STRING,
+  exposure_usd DOUBLE,
+  report_filed BOOL,
+  analyst_notes STRING
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX InvestigationCase (
+  PRIMARY_ID case_id STRING,
+  opened_at DATETIME,
+  trigger_type STRING,
+  status STRING,
+  verdict STRING,
+  fraud_probability DOUBLE,
+  temporal_cutoff DATETIME
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX Evidence (
+  PRIMARY_ID evidence_id STRING,
+  source_type STRING,
+  source_ref STRING,
+  normalized_finding STRING,
+  occurred_at DATETIME,
+  created_at DATETIME,
+  quality STRING,
+  decision_impact STRING
+) WITH primary_id_as_attribute="true";
+
+CREATE VERTEX PolicyRule (PRIMARY_ID rule_id STRING, rule_text STRING, policy_version STRING) WITH primary_id_as_attribute="true";
+CREATE VERTEX FraudPattern (PRIMARY_ID pattern_id STRING, description STRING) WITH primary_id_as_attribute="true";
+// GraphRAG content is source-versioned and loaded only from approved documents.
+CREATE VERTEX DocumentChunk (
+  PRIMARY_ID chunk_id STRING,
+  source_document STRING,
+  section_ref STRING,
+  content STRING,
+  source_version STRING,
+  valid_from DATETIME,
+  valid_to DATETIME
+) WITH primary_id_as_attribute="true";
+
+CREATE DIRECTED EDGE OWNS (FROM Customer, TO CardProfile);
+CREATE DIRECTED EDGE HAS_KNOWN_CARD (FROM Customer, TO KnownCard);
+CREATE DIRECTED EDGE MADE (FROM CardProfile, TO Transaction) WITH REVERSE_EDGE="MADE_BY";
+CREATE DIRECTED EDGE OBSERVED_AS (FROM KnownCard, TO CardProfile, observed_at DATETIME, source_case_id STRING);
+CREATE DIRECTED EDGE FROM_DEVICE (FROM Transaction, TO DeviceProfile) WITH REVERSE_EDGE="DEVICE_USED_FOR";
+CREATE DIRECTED EDGE PURCHASER_EMAIL (FROM Transaction, TO EmailDomain);
+CREATE DIRECTED EDGE RECIPIENT_EMAIL (FROM Transaction, TO EmailDomain);
+CREATE DIRECTED EDGE BILLED_IN (FROM Transaction, TO BillingRegion);
+CREATE DIRECTED EDGE NEXT (FROM Transaction, TO Transaction, gap_seconds UINT);
+CREATE DIRECTED EDGE INVOLVES (FROM ClosedCase, TO Transaction);
+CREATE DIRECTED EDGE ON_KNOWN_CARD (FROM ClosedCase, TO KnownCard);
+CREATE DIRECTED EDGE CONNECTED_TO (FROM ClosedCase, TO KnownCard);
+CREATE DIRECTED EDGE TRIGGERED_BY (FROM InvestigationCase, TO Transaction);
+CREATE DIRECTED EDGE HAS_EVIDENCE (FROM InvestigationCase, TO Evidence);
+CREATE DIRECTED EDGE GOVERNED_BY (FROM InvestigationCase, TO PolicyRule);
+CREATE DIRECTED EDGE CLASSIFIED_AS (FROM ClosedCase, TO FraudPattern);
+CREATE DIRECTED EDGE EVIDENCE_REFERENCES (
+  FROM Evidence, TO Transaction |
+  FROM Evidence, TO DeviceProfile |
+  FROM Evidence, TO BillingRegion |
+  FROM Evidence, TO EmailDomain |
+  FROM Evidence, TO ClosedCase |
+  FROM Evidence, TO PolicyRule
+);
+CREATE DIRECTED EDGE SOURCE_CHUNK (
+  FROM PolicyRule, TO DocumentChunk |
+  FROM FraudPattern, TO DocumentChunk
+);
+
+CREATE GRAPH FraudCommand (*);

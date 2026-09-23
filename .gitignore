@@ -1,0 +1,9 @@
+dist/
+node_modules/
+artifacts/
+.env
+.env.*
+!.env.example
+HHGOA_IEEE/transactions.csv
+HHGOA_IEEE/identity.csv
+HHGOA_IEEE/closed_cases_history.csv

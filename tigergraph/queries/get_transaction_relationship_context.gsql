@@ -1,0 +1,21 @@
+// Controlled relationship read. All activity is excluded when its transaction is future to cutoff.
+// KnownCard is exposed only through a case closed strictly before the cutoff.
+CREATE OR REPLACE QUERY getTransactionRelationshipContext(VERTEX<Transaction> txn, DATETIME cutoff) FOR GRAPH FraudCommand SYNTAX v2 {
+  IF txn.occurred_at <= cutoff THEN
+    Seed = {txn};
+    Devices = SELECT d FROM Seed:t -(FROM_DEVICE>:e)- DeviceProfile:d LIMIT 20;
+    PurchaserDomains = SELECT d FROM Seed:t -(PURCHASER_EMAIL>:e)- EmailDomain:d LIMIT 20;
+    RecipientDomains = SELECT d FROM Seed:t -(RECIPIENT_EMAIL>:e)- EmailDomain:d LIMIT 20;
+    BillingRegions = SELECT b FROM Seed:t -(BILLED_IN>:e)- BillingRegion:b LIMIT 20;
+    EligibleCases = SELECT c FROM Seed:t -(<INVOLVES:e)- ClosedCase:c
+                    WHERE c.closed_at < cutoff LIMIT 20;
+    KnownCards = SELECT k FROM EligibleCases:c -(ON_KNOWN_CARD>:e)- KnownCard:k LIMIT 20;
+    PRINT txn AS transaction, Devices AS device_profiles,
+          PurchaserDomains AS purchaser_email_domains, RecipientDomains AS recipient_email_domains,
+          BillingRegions AS billing_regions, KnownCards AS known_cards, cutoff AS cutoff;
+  ELSE
+    PRINT "future_transaction" AS status, txn AS transaction, cutoff AS cutoff;
+  END;
+}
+
+INSTALL QUERY -FORCE getTransactionRelationshipContext

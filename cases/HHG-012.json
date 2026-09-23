@@ -1,0 +1,107 @@
+{
+  "case_id": "HHG-012",
+  "case": {
+    "status": "closed_legitimate",
+    "verdict": "legitimate",
+    "fraud_probability": 0.55,
+    "pattern": "none",
+    "pattern_description": "",
+    "affected_txn_ids": [],
+    "first_suspicious_txn_id": "",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 0,
+    "evidence": [
+      {
+        "claim": "Transaction 3553342 verified in graph for customer C05876 with 1 associated card profiles.",
+        "source": "graph",
+        "ref": "getTransactionContext",
+        "entity_ids": [
+          "3553342"
+        ]
+      },
+      {
+        "claim": "Observed 0 linked devices, 1 billing regions, and 0 historically eligible known cards. purchaser_domains: 1, recipient_domains: 0.",
+        "source": "graph",
+        "ref": "getTransactionRelationshipContext",
+        "entity_ids": [
+          "3553342"
+        ]
+      },
+      {
+        "claim": "Billing region linked to transaction: BR-494.0|87.0",
+        "source": "graph",
+        "ref": "getTransactionRelationshipContext",
+        "entity_ids": [
+          "BR-494.0|87.0"
+        ]
+      },
+      {
+        "claim": "Identified 0 historically eligible closed cases prior to cutoff.",
+        "source": "graph",
+        "ref": "findRelatedCases",
+        "entity_ids": []
+      },
+      {
+        "claim": "Graph Analytics [Centrality: 2, RingScore: 0.00, Bridge: false]: Normal localized topology around card C05876-K2. No syndicated ring detected.",
+        "source": "graph",
+        "ref": "GraphAlgorithmsEngine:degree_and_ring_centrality",
+        "entity_ids": [
+          "3553342"
+        ]
+      },
+      {
+        "claim": "GraphRAG Synthesis [none]: Graph topology analysis for txn 3553342: No new device binding observed. No historical fraud precedents prior to cutoff. Temporal constraints strictly satisfied.",
+        "source": "graph",
+        "ref": "GraphRagEngine:subgraph_synthesis",
+        "entity_ids": [
+          "3553342"
+        ]
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Live TigerGraph investigation completed with 6 tracked evidence item(s). Graph-grounded synthesis and algorithm metrics evaluated. Initial policy action: ALLOW_TRANSACTION.",
+    "written_to_graph": true,
+    "graph_case_id": "CASE-HHG-012"
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "ALLOW_TRANSACTION",
+        "route": "auto",
+        "reason": "R1/R3: benign transaction within normal risk baseline"
+      },
+      {
+        "action": "CLOSE_NO_FRAUD",
+        "route": "auto",
+        "reason": "R3: verified legitimate activity, alert cleared"
+      }
+    ],
+    "final": [
+      {
+        "action": "ALLOW_TRANSACTION",
+        "route": "auto",
+        "reason": "R1/R3: benign transaction within normal risk baseline"
+      },
+      {
+        "action": "CLOSE_NO_FRAUD",
+        "route": "auto",
+        "reason": "R3: verified legitimate activity, alert cleared"
+      }
+    ],
+    "what_changed": "No additional evidence was requested; initial investigative recommendation remained terminal and stable."
+  },
+  "sar": {
+    "file": false,
+    "reason": "No confirmed reportable activity was established by the bounded live evidence.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0,
+    "activity_dates": []
+  },
+  "stop_reason": "All primary graph and historical fact-gathering phases are complete.",
+  "tool_calls": 3,
+  "tokens": 0,
+  "latency_s": 46.74
+}

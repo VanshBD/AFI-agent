@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-draft",
+  "graph": "FraudCommand",
+  "tools": [
+    {"name":"getGraphValidationCounts","access":"read","requiresCutoff":false,"purpose":"Return fixed aggregate counts for approved vertex and edge types; validation/audit only."},
+    {"name":"getTransactionContext","access":"read","requiresCutoff":true,"purpose":"Retrieve the flagged transaction, payment profile, optional identity, region, and time-bounded card context."},
+    {"name":"getTransactionRelationshipContext","access":"read","requiresCutoff":true,"purpose":"Return bounded DeviceProfile, EmailDomain, and BillingRegion relationships for one eligible transaction."},
+    {"name":"getCustomerTimeline","access":"read","requiresCutoff":true,"purpose":"Retrieve a customer's prior activity through the case cutoff."},
+    {"name":"getDeviceNeighbors","access":"read","requiresCutoff":true,"purpose":"Find other payment profiles using the same normalized device before the cutoff."},
+    {"name":"getBillingRegionNeighbors","access":"read","requiresCutoff":true,"purpose":"Find region-linked activity before the cutoff."},
+    {"name":"findVelocitySequence","access":"read","requiresCutoff":true,"purpose":"Evaluate card-testing and burst patterns with explicit time windows."},
+    {"name":"findRelatedCases","access":"read","requiresCutoff":true,"purpose":"Retrieve only closed historical cases eligible at the cutoff."},
+    {"name":"writeCase","access":"case_write","requiresCutoff":true,"purpose":"Write a validated investigation case after policy and authorization checks."},
+    {"name":"updateCase","access":"case_write","requiresCutoff":true,"purpose":"Append validated case state/evidence; never overwrite provenance."}
+  ]
+}
