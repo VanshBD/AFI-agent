@@ -308,8 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
         line.setAttribute("y1", src.y);
         line.setAttribute("x2", tgt.x);
         line.setAttribute("y2", tgt.y);
-        line.setAttribute("stroke", "#3a4f73");
-        line.setAttribute("stroke-width", "2");
+        line.setAttribute("stroke", "#111111");
+        line.setAttribute("stroke-width", "2.5");
         line.setAttribute("marker-end", "url(#arrow)");
         svg.appendChild(line);
 
@@ -317,9 +317,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("x", (src.x + tgt.x) / 2);
         text.setAttribute("y", (src.y + tgt.y) / 2 - 4);
-        text.setAttribute("fill", "#94a3b8");
-        text.setAttribute("font-size", "9");
-        text.setAttribute("font-family", "monospace");
+        text.setAttribute("fill", "#0a4f2e");
+        text.setAttribute("font-size", "10");
+        text.setAttribute("font-weight", "800");
+        text.setAttribute("font-family", "'JetBrains Mono', monospace");
         text.setAttribute("text-anchor", "middle");
         text.textContent = edge.relationship;
         svg.appendChild(text);
@@ -352,10 +353,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
       label.setAttribute("x", x);
       label.setAttribute("y", y + 24);
-      label.setAttribute("fill", "#f0f4fc");
-      label.setAttribute("font-size", "10");
-      label.setAttribute("font-weight", "600");
-      label.setAttribute("font-family", "sans-serif");
+      label.setAttribute("fill", "#111111");
+      label.setAttribute("font-size", "11");
+      label.setAttribute("font-weight", "800");
+      label.setAttribute("font-family", "'JetBrains Mono', monospace");
       label.setAttribute("text-anchor", "middle");
       label.textContent = node.label;
       g.appendChild(label);
@@ -426,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
       contraList.innerHTML = contradictions.map((c) => `
         <div class="contra-item">
           <strong>${c.contradictionId}:</strong> ${c.description}
-          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Resolution: <strong>${c.resolutionStatus}</strong></div>
+          <div style="font-size:11px; font-weight:700; color:#111111; margin-top:2px;">Resolution: <strong>${c.resolutionStatus}</strong></div>
         </div>
       `).join("");
     } else {
@@ -437,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sensList.innerHTML = sensitivities.map((s) => `
         <div class="sens-item">
           <strong>Unknown:</strong> ${s.unknownFact}
-          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Impact: <strong>${s.expectedImpact}</strong> | Can change action to: <strong>${s.potentiallyChangedActions.join(", ")}</strong></div>
+          <div style="font-size:11px; font-weight:700; color:#111111; margin-top:2px;">Impact: <strong>${s.expectedImpact}</strong> | Can change action to: <strong>${s.potentiallyChangedActions.join(", ")}</strong></div>
         </div>
       `).join("");
     } else {
@@ -527,8 +528,8 @@ document.addEventListener("DOMContentLoaded", () => {
         evidenceContent.innerHTML = requests.map((req) => `
           <div>
             <div style="font-size:12px; font-weight:700; color:var(--text-primary);">Type: ${req.type.replace(/_/g, " ").toUpperCase()}</div>
-            <div class="sub-text" style="margin-top:2px;">Dispatched after Step ${req.asked_after_step}</div>
-            <div style="font-size:11.5px; color:#cbd5e1; margin-top:4px; font-style:italic;">Response: "${req.assumed_response}"</div>
+            <div class="sub-text" style="margin-top:2px; font-weight:700; color:#374151;">Dispatched after Step ${req.asked_after_step}</div>
+            <div style="font-size:12px; font-weight:700; color:#111111; margin-top:6px; background:#ffffff; padding:6px 10px; border:1.5px solid #111111; border-radius:4px;">Response: "${req.assumed_response}"</div>
           </div>
         `).join("");
       } else {
@@ -563,8 +564,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           `).join("")}
         </div>
-        <div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.08); font-size:11px;">
-          <span style="color:var(--text-muted);">What Changed:</span> <span style="color:var(--text-secondary);">${officialCase.next_best_actions.what_changed}</span>
+        <div style="margin-top:8px; padding-top:6px; border-top:1.5px solid #d1d5db; font-size:11px;">
+          <span style="font-weight:900; color:#111111;">What Changed:</span> <span style="font-weight:600; color:#111111;">${officialCase.next_best_actions.what_changed}</span>
         </div>
       `;
     }
